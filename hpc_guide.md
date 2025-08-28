@@ -1,9 +1,9 @@
 # Login by MobaXterm
 1. Click Session
-![Click Session](images\hpc-1.png)
+![Click Session](images/hpc-1.png)
 
 2. Click SSH, fill in Remote host and your username, and click OK
-![fill in Remote host](images\hpc-2.png)
+![fill in Remote host](images/hpc-2.png)
 
 
 ### Remote Host:
@@ -57,7 +57,7 @@ nvidia-smi
 https://intranet.abi.auckland.ac.nz/en/it-and-printing/computing-resources.html
 
 Click this
-![Check GPU usage](images\hpc-3.png)
+![Check GPU usage](images/hpc-3.png)
 
 
 # Auto Login
@@ -86,7 +86,7 @@ save the file
 
 ### Step3:
 Select your `~/.ssh/id_rsa` file to the primary key
-![primary key](images\hpc-4.png)
+![primary key](images/hpc-4.png)
 
 ### Step4:
 Reconnect
