@@ -32,3 +32,22 @@ Copy-Item -Path "Z:\source_folder\*" -Destination "C:\local\target_folder\" -Rec
 ```
 cp -r /mnt/zdrive/source_folder/* ~/local/target_folder/
 ```
+
+
+## Unzip
+### Windows
+```
+Expand-Archive -Path "Z:\path\to\yourfile.zip" -DestinationPath "C:\path\to\output" -Force
+```
+
+
+
+
+
+
+
+
+
+
+
+
