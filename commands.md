@@ -43,7 +43,7 @@ Expand-Archive -Path "Z:\path\to\yourfile.zip" -DestinationPath "C:\path\to\outp
 ## Check Disk Usage
 ### Check Current Folder with All Subfolders
 ```
-du -h ~
+du -h /path/
 ```
 ### Check Only the Current Folder (total size)
 ```
@@ -51,7 +51,7 @@ du -sh .
 ```
 ### Check Each Subfolder in the Current Folder
 ```
-du -h --max-depth=1 ~
+du -h --max-depth=1 /path/
 ```
 
 
