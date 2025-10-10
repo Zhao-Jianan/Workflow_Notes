@@ -40,8 +40,19 @@ cp -r /mnt/zdrive/source_folder/* ~/local/target_folder/
 Expand-Archive -Path "Z:\path\to\yourfile.zip" -DestinationPath "C:\path\to\output" -Force
 ```
 
-
-
+## Check Disk Usage
+### Check Current Folder with All Subfolders
+```
+du -h ~
+```
+### Check Only the Current Folder (total size)
+```
+du -sh .
+```
+### Check Each Subfolder in the Current Folder
+```
+du -h --max-depth=1 ~
+```
 
 
 
