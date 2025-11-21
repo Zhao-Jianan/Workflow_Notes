@@ -6,7 +6,7 @@ scp -r ajhz839@hpc5.bioeng.auckland.ac.nz:/path/to/hpc_folder/ "C:\local\destina
 
 ## Upload
 ```
-scp -r "C:\local\myfolder"  ajhz839@hpc5.bioeng.auckland.ac.nz  :/path/to/hpc_folder/
+scp -r "C:\local\myfolder"  ajhz839@hpc5.bioeng.auckland.ac.nz:/path/to/hpc_folder/
 ```
 
 
