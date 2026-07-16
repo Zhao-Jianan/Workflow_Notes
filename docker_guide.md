@@ -282,57 +282,266 @@ Parameter explanation:
 
 ---
 
-# 9. Check Outputs
 
-View outputs:
+# 9. Running Docker Containers in the Background on HPC
 
-```bash
-ls -lh ~/test/output
-```
-
-Expected output:
-
-```text
-BraTS-GoAT-00001.nii.gz
-BraTS-GoAT-00002.nii.gz
-BraTS-GoAT-00003.nii.gz
-...
-```
-
-Correct output structure:
-
-```text
-/output/
-├── BraTS-GoAT-00001.nii.gz
-├── BraTS-GoAT-00002.nii.gz
-└── ...
-```
-
-Incorrect output structure:
-
-```text
-/output/
-└── predictions/
-    ├── BraTS-GoAT-00001.nii.gz
-```
-
-BraTS requires a flat output directory.
+This guide explains how to run a Docker container in the background on an HPC or cloud instance, monitor its progress, and stop it when needed.
 
 ---
 
-# 10. Final Submission Checklist
+## Method 1: Docker Detached Mode (Recommended)
 
-Before submission, confirm:
+Start the container in the background using Docker's detached mode:
 
-- [ ] All inputs are read from `/input`
-- [ ] All final outputs are written to `/output`
-- [ ] No `/hpc/...` paths remain
-- [ ] No hard-coded dataset locations remain
-- [ ] No `CUDA_VISIBLE_DEVICES`
-- [ ] No `os.chdir(...)`
-- [ ] Temporary files are stored in `/tmp`
-- [ ] Docker runs successfully with `--network none`
-- [ ] Output directory is flat
-- [ ] One `.nii.gz` file is generated for each case
+```bash
+sudo docker run -d \
+    --name spikeformerunet_test \
+    --gpus=all \
+    --network none \
+    --volume /home/ubuntu/docker/input:/input:ro \
+    --volume /home/ubuntu/docker/output:/output:rw \
+    --memory=48G \
+    --shm-size=16G \
+    spikeformerunet:2.5
+```
 
-If all items are checked, the Docker container is ready for BraTS submission.
+### Parameter Explanation
+
+| Parameter | Description |
+|------------|------------|
+| `-d` | Run the container in the background (detached mode). |
+| `--name spikeformerunet_test` | Assign a custom container name. |
+| `--gpus=all` | Make all available GPUs visible inside the container. |
+| `--network none` | Disable network access inside the container. |
+| `--volume /home/ubuntu/docker/input:/input:ro` | Mount input directory as read-only. |
+| `--volume /home/ubuntu/docker/output:/output:rw` | Mount output directory as read-write. |
+| `--memory=48G` | Limit container RAM usage to 48 GB. |
+| `--shm-size=16G` | Set shared memory size to 16 GB. |
+
+---
+
+## Monitor Container Status
+
+List running containers:
+
+```bash
+docker ps
+```
+
+Example:
+
+```text
+CONTAINER ID   IMAGE                 STATUS
+f626888cc45c   spikeformerunet:2.5   Up 10 minutes
+```
+
+---
+
+## View Container Logs
+
+Follow container logs in real time:
+
+```bash
+docker logs -f spikeformerunet_test
+```
+
+---
+
+## Check GPU Utilization
+
+Monitor GPU usage:
+
+```bash
+watch -n 5 nvidia-smi
+```
+
+Example:
+
+```text
+GPU Name        Memory-Usage
+V100-SXM2-16GB  3500MiB / 16160MiB
+```
+
+---
+
+## Stop a Running Container
+
+Stop a specific container:
+
+```bash
+docker stop spikeformerunet_test
+```
+
+Or stop using the container ID:
+
+```bash
+docker stop f626888cc45c
+```
+
+---
+
+## Remove a Container
+
+After stopping:
+
+```bash
+docker rm spikeformerunet_test
+```
+
+---
+
+## Stop All Running Containers
+
+```bash
+sudo docker stop $(sudo docker ps -q)
+```
+
+---
+
+## Remove All Containers
+
+```bash
+sudo docker rm $(sudo docker ps -aq)
+```
+
+---
+
+## Method 2: Using nohup
+
+You can also run Docker through `nohup` so it survives terminal disconnection.
+
+```bash
+nohup sudo docker run \
+    --rm \
+    --gpus=all \
+    --network none \
+    --volume /home/ubuntu/docker/input:/input:ro \
+    --volume /home/ubuntu/docker/output:/output:rw \
+    --memory=48G \
+    --shm-size=16G \
+    spikeformerunet:2.5 \
+    > docker.log 2>&1 &
+```
+
+### Parameter Explanation
+
+| Parameter | Description |
+|------------|------------|
+| `nohup` | Ignore hangup signals when SSH disconnects. |
+| `> docker.log` | Redirect standard output to a log file. |
+| `2>&1` | Redirect standard error to the same log file. |
+| `&` | Run the process in the background. |
+| `--rm` | Automatically remove the container after completion. |
+
+---
+
+### Monitor nohup Logs
+
+```bash
+tail -f docker.log
+```
+
+---
+
+# Memory Monitoring on HPC
+
+## System Memory
+
+```bash
+free -h
+```
+
+Example:
+
+```text
+               total        used        free
+Mem:           251Gi       120Gi        80Gi
+```
+
+---
+
+## Real-Time Process Monitoring
+
+```bash
+htop
+```
+
+or
+
+```bash
+top
+```
+
+Inside `top`, press:
+
+```text
+Shift + M
+```
+
+to sort processes by memory usage.
+
+---
+
+## Check Your Own Processes
+
+```bash
+ps -u $USER -o pid,%mem,rss,vsz,cmd --sort=-rss
+```
+
+RSS is the actual physical memory consumption.
+
+---
+
+## Check GPU Memory
+
+```bash
+nvidia-smi
+```
+
+Real-time monitoring:
+
+```bash
+watch -n 1 nvidia-smi
+```
+
+---
+
+# Recommended Workflow
+
+Start container:
+
+```bash
+docker run -d \
+    --name spikeformerunet_test \
+    --gpus=all \
+    --network none \
+    --volume /home/ubuntu/docker/input:/input:ro \
+    --volume /home/ubuntu/docker/output:/output:rw \
+    --memory=48G \
+    --shm-size=16G \
+    spikeformerunet:2.5
+```
+
+Monitor logs:
+
+```bash
+docker logs -f spikeformerunet_test
+```
+
+Monitor GPU:
+
+```bash
+watch -n 5 nvidia-smi
+```
+
+Check output files:
+
+```bash
+ls /home/ubuntu/docker/output
+```
+
+Stop container if necessary:
+
+```bash
+docker stop spikeformerunet_test
+```
