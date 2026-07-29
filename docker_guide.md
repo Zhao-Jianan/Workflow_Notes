@@ -725,3 +725,18 @@ sudo docker system prune -af
 ```
 
 > **Warning:** This will remove **all** local containers, images, unused networks, and build cache. Only run this if you no longer need any Docker resources on the machine.
+
+
+
+
+# apptainer
+```
+nohup env CUDA_VISIBLE_DEVICES=2 apptainer exec \
+    --nv \
+    --pwd /app \
+    --bind /hpc/ajhz839/data/BraTS2026/GoAT/MICCAI2024-BraTS-GoAT-ValidationData:/input:ro \
+    --bind /hpc/ajhz839/docker/output/:/output:rw \
+    spikeformerunet.sif \
+    bash -c "cd /app && ./run.sh" \
+    > apptainer.log 2>&1 &
+```
