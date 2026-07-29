@@ -68,7 +68,7 @@ python inference_main.py
 Run the following command in the directory containing the Dockerfile:
 
 ```powershell
-docker build -t spikeformerunet:latest .
+sudo docker build -t docker.synapse.org/syn75259843/spikeformerunet:3.0 .
 ```
 
 Verify the image was built successfully:
@@ -302,7 +302,7 @@ sudo docker run -d \
     --volume /home/ubuntu/docker/output:/output:rw \
     --memory=48G \
     --shm-size=16G \
-    spikeformerunet:2.5
+    docker.synapse.org/syn75259843/spikeformerunet:3.0
 ```
 
 ### Parameter Explanation
@@ -419,7 +419,7 @@ nohup sudo docker run \
     --volume /home/ubuntu/docker/output:/output:rw \
     --memory=48G \
     --shm-size=16G \
-    spikeformerunet:2.5 \
+    docker.synapse.org/syn75259843/spikeformerunet:3.0 \
     > docker.log 2>&1 &
 ```
 
@@ -545,3 +545,183 @@ Stop container if necessary:
 ```bash
 docker stop spikeformerunet_test
 ```
+
+---
+
+# 10. Docker Cleanup
+
+After testing, you may want to remove unused containers, images, and build cache to free disk space.
+
+---
+
+## Remove a Container
+
+List all containers:
+
+```bash
+sudo docker ps -a
+```
+
+Remove a stopped container:
+
+```bash
+sudo docker rm spikeformerunet_test
+```
+
+Or remove by container ID:
+
+```bash
+sudo docker rm <container_id>
+```
+
+Force remove a running container:
+
+```bash
+sudo docker rm -f spikeformerunet_test
+```
+
+---
+
+## Remove an Image
+
+List local images:
+
+```bash
+sudo docker images
+```
+
+Remove an image by name:
+
+```bash
+sudo docker rmi spikeformerunet:latest
+```
+
+Or remove by image ID:
+
+```bash
+sudo docker rmi <image_id>
+```
+
+Force removal if the image is referenced by stopped containers:
+
+```bash
+sudo docker rmi -f spikeformerunet:latest
+```
+
+---
+
+## Remove All Stopped Containers
+
+```bash
+sudo docker container prune
+```
+
+Skip the confirmation prompt:
+
+```bash
+sudo docker container prune -f
+```
+
+---
+
+## Remove Dangling Images
+
+These are untagged images left behind after rebuilding.
+
+```bash
+sudo docker image prune
+```
+
+Skip confirmation:
+
+```bash
+sudo docker image prune -f
+```
+
+---
+
+## Remove Build Cache
+
+Remove unused build cache:
+
+```bash
+sudo docker builder prune
+```
+
+Remove all build cache:
+
+```bash
+sudo docker builder prune -a
+```
+
+Skip confirmation:
+
+```bash
+sudo docker builder prune -af
+```
+
+---
+
+## Remove Unused Docker Resources
+
+Remove unused containers, networks, dangling images, and build cache:
+
+```bash
+sudo docker system prune
+```
+
+Remove everything that is not currently used (including unused images):
+
+```bash
+sudo docker system prune -a
+```
+
+Skip confirmation:
+
+```bash
+sudo docker system prune -af
+```
+
+> **Note:** `docker system prune -a` removes all unused images, not only dangling images. Images currently used by running containers will not be removed.
+
+---
+
+## Check Docker Disk Usage
+
+View how much disk space Docker is using:
+
+```bash
+sudo docker system df
+```
+
+Detailed disk usage:
+
+```bash
+sudo docker system df -v
+```
+
+Example output:
+
+```text
+TYPE            TOTAL     ACTIVE    SIZE
+Images          4         1         18.2GB
+Containers      2         1         320MB
+Local Volumes   1         1         5.6GB
+Build Cache     3         0         2.4GB
+```
+
+---
+
+## Complete Cleanup (Use with Caution)
+
+If you want to completely reset your local Docker environment:
+
+```bash
+sudo docker stop $(sudo docker ps -q)
+sudo docker rm -f $(sudo docker ps -aq)
+sudo docker rmi -f $(sudo docker images -q)
+sudo docker builder prune -af
+sudo docker system prune -af
+```
+
+> **Warning:** This will remove **all** local containers, images, unused networks, and build cache. Only run this if you no longer need any Docker resources on the machine.
