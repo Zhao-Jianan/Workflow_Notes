@@ -18,6 +18,7 @@ hpc7.bioeng.auckland.ac.nz
 
 
 # Multi Task
+## nohup
 ### Multi Task and Background work code:
 
 ```
@@ -45,6 +46,60 @@ If you want to stop a background task before it is finished:
 ```
 pkill -f filename.py
 ```
+
+## tmux
+### Create Session
+
+```
+tmux new -s exp
+```
+
+or
+
+```
+tmux new-session -s exp
+```
+
+### List Sessions
+```
+tmux ls
+```
+
+or
+
+```
+tmux list-sessions
+```
+
+### Attach Session
+```
+tmux attach -t exp
+```
+
+or
+
+```
+tmux a -t exp
+```
+
+
+### Detach Session
+```
+Ctrl+B D
+```
+
+
+### Kill Session
+```
+tmux kill-session -t exp
+```
+
+### Kill Server
+```
+tmux kill-server
+```
+
+
 
 # Check GPU usage
 ### Check GPU usage of current HPC:
