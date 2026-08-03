@@ -48,7 +48,9 @@ pkill -f filename.py
 ```
 
 ## tmux
-### Create Session
+### Session Management
+
+#### Create Session
 
 ```
 tmux new -s exp
@@ -60,7 +62,7 @@ or
 tmux new-session -s exp
 ```
 
-### List Sessions
+#### List Sessions
 ```
 tmux ls
 ```
@@ -71,7 +73,7 @@ or
 tmux list-sessions
 ```
 
-### Attach Session
+#### Attach Session
 ```
 tmux attach -t exp
 ```
@@ -83,21 +85,136 @@ tmux a -t exp
 ```
 
 
-### Detach Session
+#### Detach Session
 ```
 Ctrl+B D
 ```
 
 
-### Kill Session
+#### Kill Session
 ```
 tmux kill-session -t exp
 ```
+
+### Window Management
+#### Create New Window
+##### Create a new window in the current session
+Shortcut: 
+```
+Ctrl+B C
+```
+Command:
+```
+tmux new-window
+```
+
+##### Create a window with a specific name
+```
+tmux new-window -n train
+```
+
+#### List Windows
+List all windows in the current session:
+Shortcut:
+```
+Ctrl+B W
+```
+Command:
+```
+tmux list-windows
+```
+
+#### Switch Between Windows
+
+##### Next Window
+
+```
+Ctrl+B N
+```
+
+##### Previous Window
+
+```
+Ctrl+B P
+```
+
+##### Switch to a Specific Window
+
+```
+Ctrl+B 0
+```
+
+```
+Ctrl+B 1
+```
+
+```
+Ctrl+B 2
+```
+
+
+#### Rename Window
+
+Shortcut:
+
+```
+Ctrl+B ,
+```
+
+Command:
+
+```
+tmux rename-window new_name
+```
+
+
+
+#### Kill Window
+
+##### Kill the current window
+
+Shortcut:
+
+```
+Ctrl+B &
+```
+
+Command:
+
+```
+tmux kill-window
+```
+
+##### Kill a specific window
+
+```
+tmux kill-window -t 2
+```
+
+
+#### Move Window
+
+##### Move the current window to a specific index
+
+Shortcut:
+
+```
+Ctrl+B .
+```
+
+Command:
+
+```
+tmux move-window -t 3
+```
+
 
 ### Kill Server
 ```
 tmux kill-server
 ```
+
+
 
 
 
